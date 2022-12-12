@@ -19,28 +19,27 @@ module.exports = function terser(options, done) {
     filename: options.file
   });
 
-  const results = Terser.minify(options.content.toString('utf-8'), config.terser);
+  Terser
+    .minify(options.content.toString('utf-8'), config.terser)
+    //
+    // Return on a minification error.
+    //
+    .catch(e => done(String(e)))
+    .then(results => {
+      //
+      // Get hash for content.
+      //
+      const fingerprint = fingerprinter(options.file, { content: results.code, map: true });
 
-  //
-  // Return on a minification error.
-  //
-  if (results.error) {
-    return done(results.error);
-  }
-
-  //
-  // Get hash for content.
-  //
-  const fingerprint = fingerprinter(options.file, { content: results.code, map: true });
-
-  done(null, {
-    content: results.code,
-    fingerprint: fingerprint.id,
-    filename: config.filename
-  }, {
-    [config.map]: {
-      content: results.map,
-      fingerprint: fingerprint.id
-    }
-  });
+      done(null, {
+        content: results.code,
+        fingerprint: fingerprint.id,
+        filename: config.filename
+      }, {
+        [config.map]: {
+          content: results.map,
+          fingerprint: fingerprint.id
+        }
+      });
+    });
 };
