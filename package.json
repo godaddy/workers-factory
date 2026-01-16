@@ -50,7 +50,7 @@
     "toml": "^3.0.0",
     "uglify-js": "^3.6.0",
     "walk": "^2.3.9",
-    "webpack": "^4.37.0"
+    "webpack": "^5.75.0"
   },
   "devDependencies": {
     "assume": "^2.2.0",
